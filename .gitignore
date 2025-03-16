@@ -1,2 +1,3 @@
 # Ignorar el archivo de credenciales
 MYENV\credentials.py
+myenv/credentials.py

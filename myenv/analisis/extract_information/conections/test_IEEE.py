@@ -31,7 +31,7 @@ def createLinkExtractInformation(pageNumber, textToFind: str):
 
 def extract_information(page: Page, text: str):
     login(page, username, password)
-    
+
     # Wait until the URL is the expected one
     while not page.url.startswith(link_IEEE):
         page.wait_for_timeout(1000)  # Wait 1 second before checking again

@@ -1,6 +1,6 @@
 from playwright.sync_api import sync_playwright, Page, expect
 import pandas as pd
-
+from analisis.extract_information.conections.credentials import username, password
 # Define the URLs
 link = "https://login.intelproxy.com/v2/conector/google/solicitar?cuenta=7Ah6RNpGWF22jjyq&url=ezp.2aHR0cHM6Ly9pZWVleHBsb3JlLmllZWUub3JnL3NlYXJjaC9zZWFyY2hyZXN1bHQuanNwP2FjdGlvbj1zZWFyY2gmbmV3c2VhcmNoPXRydWU-"
 link_IEEE = "https://ieeexplore-ieee-org.crai.referencistas.com/search/searchresult.jsp?action=search&newsearch=true"
@@ -30,7 +30,7 @@ def createLinkExtractInformation(pageNumber, textToFind: str):
     return link_extractInformation
 
 def extract_information(page: Page, text: str):
-    login(page, "juand.guzmang@uqvirtual.edu.co", "xxxxxxxxxxxxxxxx")
+    login(page, username, password)
     
     # Wait until the URL is the expected one
     while not page.url.startswith(link_IEEE):

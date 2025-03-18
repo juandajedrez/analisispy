@@ -1,2 +1,2 @@
 # Ignorar el archivo de credenciales
-myenv/analisis/credentials.py
+myenv/analisis/extract_information/conections/credentials.py

@@ -30,7 +30,7 @@ def createLinkExtractInformation(pageNumber, textToFind: str):
     return link_extractInformation
 
 def extract_information(page: Page, text: str):
-    login(page, "juand.guzmang@uqvirtual.edu.co", "Juandajedrez20251")
+    login(page, "juand.guzmang@uqvirtual.edu.co", "xxxxxxxxxxxxxxxx")
     
     # Wait until the URL is the expected one
     while not page.url.startswith(link_IEEE):

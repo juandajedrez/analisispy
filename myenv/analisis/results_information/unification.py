@@ -1,67 +1,57 @@
-# Importar la librería necesaria
-from pybtex.database import BibliographyData, Entry, parse_string
-import pandas as pd
+import os
 import glob
+from pybtex.database import parse_file, BibliographyData
 
-#Title,Link,Authors,Conference,Year
+# 📂 Definir la carpeta donde están los archivos BibTeX
+carpeta = os.path.abspath("../extract_information/conections/archivos_csv")
 
+# 📌 Buscar archivos .bib en la carpeta
+archivos_bib = glob.glob(os.path.join(carpeta, "*.bib"))
 
-def unificar():
-    #busca todos los archivos csv en el directorio
-    print()
-    archivos_csv = glob.glob("analisispy/myenv/analisis/extract_information/conections/*.csv") 
-    print(f"Se encontraron {len(archivos_csv)} archivos CSV.")
+if not archivos_bib:
+    print(f"❌ No se encontraron archivos .bib en {carpeta}.")
+    exit()
 
-    #los une en un datagrama
-    df = pd.concat([pd.read_csv(archivo) for archivo in archivos_csv], ignore_index=True)
+print(f"📂 Archivos encontrados: {archivos_bib}")
 
-    # identificamos duplicados
-    duplicados = df[df.duplicated(subset=["Title","Link", "Authors", "Conference", "Year"], keep=False)]  # Encuentra duplicados
-    df_sin_duplicados = df.drop_duplicates(subset=["Title","Link", "Authors", "Conference", "Year"], keep="first")  # Mantiene solo una versión
+# 📌 Archivos de salida
+archivo_final = os.path.join(carpeta, "unificado.bib")
+archivo_repetidos = os.path.join(carpeta, "repetido.bib")
 
-    # Guardar los resultados en archivos CSV
-    df_sin_duplicados.to_csv("analisispy/myenv/analisis/results_information/archivo_final.csv", index=False)  # CSV sin duplicados
-    duplicados.to_csv("analisispy/myenv/analisis/results_information/duplicados.csv", index=False)  # CSV con duplicados
+# 📌 Diccionarios para referencias únicas y repetidas
+referencias = {}
+repetidos = {}
 
-    print("csv guardados exitosamente")
+# 📌 Leer cada archivo BibTeX y procesarlo
+for archivo in archivos_bib:
+    try:
+        bib_data = parse_file(archivo)
+        
+        for key, entry in bib_data.entries.items():
+            titulo = entry.fields.get("title", "Unknown Title")  # Obtener el título, o 'Unknown Title' si no existe
+            
+            if titulo in referencias:
+                repetidos[titulo] = entry  # Guardar si ya existía
+            else:
+                referencias[titulo] = entry  # Agregar si es nuevo
+                
+    except Exception as e:
+        print(f"⚠️ Error al procesar {archivo}: {e}")
 
-    csv_a_bibtex("analisispy/myenv/analisis/results_information/archivo_final.csv","analisispy/myenv/analisis/results_information/biptext_sd.bib")
-    csv_a_bibtex("analisispy/myenv/analisis/results_information/duplicados.csv","analisispy/myenv/analisis/results_information/biptext_cd.bib")
+# 📌 Guardar el archivo unificado (sin duplicados)
+try:
+    bib_final = BibliographyData(referencias)
+    with open(archivo_final, "w", encoding="utf-8") as f:
+        f.write(bib_final.to_string("bibtex"))
+except IOError as e:
+    print(f"❌ Error al escribir {archivo_final}: {e}")
 
+# 📌 Guardar los repetidos
+try:
+    bib_repetidos = BibliographyData(repetidos)
+    with open(archivo_repetidos, "w", encoding="utf-8") as f:
+        f.write(bib_repetidos.to_string("bibtex"))
+except IOError as e:
+    print(f"❌ Error al escribir {archivo_repetidos}: {e}")
 
-
-def csv_a_bibtex(csv_file, bibtex_file):
-    # Cargar el archivo CSV
-    df = pd.read_csv(csv_file)
-
-    # Crear un diccionario para almacenar las referencias en BibTeX
-    entries = {}
-
-    for i, row in df.iterrows():
-        key = f"ref{i+1}"  # Clave única para cada referencia
-        fields = {}
-
-        # Agregamos campos según las columnas
-        if pd.notna(row["Title"]):
-            fields["title"] = row["Title"]
-        if pd.notna(row["Link"]):
-            fields["Link"]=row["Link"]
-        if pd.notna(row["Authors"]):
-            fields["author"] = row["Authors"]
-        if pd.notna(row["Conference"]):
-            fields["Conference"] = row["Conference"]  
-        if pd.notna(row["Year"]):
-            fields["year"] = str(row["Year"])
-
-
-        # Crear la entrada BibTeX si tiene título y autor
-        if "title" in fields and "author" in fields:
-            entries[key] = Entry("inproceedings", fields=fields)  # "inproceedings" es para conferencias
-
-    # Guardar en archivo BibTeX
-    bib_data = BibliographyData(entries)
-    with open(bibtex_file, "w", encoding="utf-8") as f:
-        f.write(bib_data.to_string("bibtex"))
-
-    print(f"Archivo BibTeX guardado como {bibtex_file}")
-
+print(f"✅ Archivos generados:\n - {archivo_final} (sin duplicados)\n - {archivo_repetidos} (duplicados)")

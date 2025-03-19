@@ -1,6 +1,19 @@
 from playwright.sync_api import sync_playwright, Page, expect
 import pandas as pd
+import sys
+import os
+import time
+import glob
+
+#agregue esto para que me reconociera los modulos, pq de resto no quiso
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
+
+
 from analisis.extract_information.conections.credentials import username, password
+#este es el metodo unificar
+from analisis.results_information.unification import unificar
+
+
 # Define the URLs
 link = "https://login.intelproxy.com/v2/conector/google/solicitar?cuenta=7Ah6RNpGWF22jjyq&url=ezp.2aHR0cHM6Ly9pZWVleHBsb3JlLmllZWUub3JnL3NlYXJjaC9zZWFyY2hyZXN1bHQuanNwP2FjdGlvbj1zZWFyY2gmbmV3c2VhcmNoPXRydWU-"
 link_IEEE = "https://ieeexplore-ieee-org.crai.referencistas.com/search/searchresult.jsp?action=search&newsearch=true"
@@ -78,3 +91,19 @@ with sync_playwright() as p:
     page = browser.new_page()
     test(page)
     browser.close()
+
+    #la idea era que cuando descarguen los 3 haga la union y tire los biptext
+    # cantidad_archivos=3
+
+    # tiempo_inicio = time.time()
+    # while time.time() - tiempo_inicio < 60:
+    #     #archivos = [f for f in os.listdir("analisis/extract_information/conections") if f.endswith(".csv")]
+    #     archivos = glob.glob("analisispy/myenv/analisis/extract_information/conections/*.csv")
+    #     if len(archivos) >= cantidad_archivos:  
+    #         print(f"✅ {len(archivos)} archivos descargados: {archivos}")
+    #         unificar()
+    # time.sleep(6)  # Revisa cada 6 segundos
+    # print(f"⚠️ No se descargaron al menos {cantidad_archivos} archivos en {60} segundos.{len(archivos)}")
+
+
+

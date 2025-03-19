@@ -1,7 +1,13 @@
 from playwright.sync_api import sync_playwright, Page, expect
 import pandas as pd
+
 from analisis.extract_information.conections.credentials  import username, password
 import os
+import sys
+
+sys.path.append( os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
+from analisis.extract_information.conections.credentials import username, password
+
 
 # Define the URLs
 link = "https://login.intelproxy.com/v2/conector/google/solicitar?cuenta=7Ah6RNpGWF22jjyq&url=ezp.2aHR0cHM6Ly9pZWVleHBsb3JlLmllZWUub3JnL3NlYXJjaC9zZWFyY2hyZXN1bHQuanNwP2FjdGlvbj1zZWFyY2gmbmV3c2VhcmNoPXRydWU-"
@@ -53,7 +59,7 @@ def extract_information_IEEE(page: Page, text: str):
     page.goto(createLinkExtractInformation_IEEE(1, text))
     #SELECCIONAR TODAS LAS REVISTAS
     page.click('#xplMainContent > div.ng-SearchResults.row.g-0 > div.col > xpl-results-list > div.results-actions.hide-mobile > label > input')
-    page.wait_for_timeout(7000)
+    page.wait_for_timeout(10000)
 
     # Haz clic en el botón de exportar resultados de búsqueda
     page.click('#xplMainContent > div.ng-Dashboard > div.col-12.action-bar.hide-mobile > ul > li.Menu-item.inline-flexed.export-filter.no-line-break.pe-3.myproject-export > xpl-export-search-results > button')

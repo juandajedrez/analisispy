@@ -1,3 +1,3 @@
 # credentials.py
-username = 'correo'
-password = 'contraseña'
+username = 'jahnc.martinezv@uqvirtual.edu.co'
+password = 'Destino*2611'

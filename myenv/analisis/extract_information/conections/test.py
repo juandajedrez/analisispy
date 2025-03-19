@@ -1,6 +1,6 @@
 from playwright.sync_api import sync_playwright, Page, expect
 import pandas as pd
-from analisis.extract_information.conections.credentials import username, password
+from analisis.extract_information.conections.credentials  import username, password
 import os
 
 # Define the URLs
@@ -90,7 +90,7 @@ def extract_information_sage(page: Page, text: str):
     page.click('#action-bar-select-all')
 
     page.click('#pb-page-content > div > div > main > div.content.search-page > div > div > div > div.search-result.doSearch > div.search-result--grid > div.search-result--grid__block.search-result--grid__block__2 > div > div.article-actionbar__btns')
-    page.wait_for_timeout(2000)
+    page.wait_for_timeout(7000)
     page.select_option('#citation-format', 'bibtex')
     page.wait_for_timeout(7000)
     page.click('#exportCitation > div > div > div.form-buttons > a')
